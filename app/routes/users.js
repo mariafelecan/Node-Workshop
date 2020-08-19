@@ -2,9 +2,23 @@
 
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
 const usersController = require("../controllers/usersController");
 const commonController = require("../controllers/common");
+const { pathToUpload } = require("../config");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, pathToUpload);
+  },
+  filename: function (req, file, cb) {
+    console.log(file, "file");
+    cb(null, `${Date.now()}-${file.originalname}`);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 const {
   getUsers,
@@ -14,6 +28,14 @@ const {
   getUserById,
 } = usersController;
 const { responseToJSON } = commonController;
+
+router.post("/upload-profile", upload.single("profilePicture"), function (
+  req,
+  res,
+  next
+) {
+  res.send("Uploaded");
+});
 
 router.get("/users", getUsers, responseToJSON("users"));
 
