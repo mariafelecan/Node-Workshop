@@ -37,6 +37,11 @@ router.post("/upload-profile", upload.single("profilePicture"), function (
   res.send("Uploaded");
 });
 
+router.get("/download-image", function (req, res, next) {
+  const pathToFile = `${pathToUpload}/1597823766482-DSCN1228.JPG`;
+  res.download(pathToFile);
+});
+
 router.get("/users", getUsers, responseToJSON("users"));
 
 router.post("/users", createUser);
